@@ -34,20 +34,21 @@ def appmetadata() -> AppMetadata:
     # ================================|
     # IO Spec
     metadata.add_input(DocumentTypes.Document)
-    metadata.add_input(AnnotationTypes.BoundingBox, boxType='text')
+    metadata.add_input(AnnotationTypes.BoundingBox)
     metadata.add_input(AnnotationTypes.Alignment)
     
-    metadata.add_output(AnnotationTypes.BoundingBox, boxType="text")
+    metadata.add_output(AnnotationTypes.BoundingBox)
 
     # ================================|
     # Runtime Parameters
-    #TODO: Dean Cahill 09/26/23: should we give this app a frameType?
     metadata.add_parameter(name="timeUnit",
                            description="the division of time processing",
                            type="string",
                            choices=["frames","seconds","milliseconds"],
                            default="frames")
-    
+    metadata.add_parameter(name="boxType",
+                           description="the type of boxes that are being concatenated",
+                           default="text")
     return metadata
 
 
