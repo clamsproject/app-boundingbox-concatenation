@@ -1,5 +1,5 @@
 # Use the same base image version as the clams-python python library version
-FROM ghcr.io/clamsproject/clams-python:1.0.7
+FROM ghcr.io/clamsproject/clams-python:1.2.3
 
 ################################################################################
 # DO NOT EDIT THIS SECTION
@@ -16,7 +16,7 @@ ENV CLAMS_APP_VERSION ${CLAMS_APP_VERSION}
 # main app installation
 COPY ./ /app
 WORKDIR /app
-RUN pip3 install -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 # default command to run the CLAMS app in a production server 
 CMD ["python3", "app.py", "--production"]
