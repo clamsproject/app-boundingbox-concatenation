@@ -27,7 +27,7 @@ ENV TORCH_HOME="/cache/torch"
 # main app installation
 COPY ./ /app
 WORKDIR /app
-RUN pip3 install -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 # default command to run the CLAMS app in a production server 
 CMD ["python3", "app.py", "--production"]
