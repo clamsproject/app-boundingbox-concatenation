@@ -48,7 +48,7 @@ def appmetadata() -> AppMetadata:
         default="frames",
     )
     metadata.add_parameter(
-        name="boxType",
+        name="label",
         description="the type of boxes that are being concatenated",
         default="text",
         type="string",
