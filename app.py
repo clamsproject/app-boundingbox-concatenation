@@ -31,6 +31,7 @@ class BoundingboxConcatenation(ClamsApp):
         pass
 
     def _annotate(self, mmif: Union[str, dict, Mmif], **parameters) -> Mmif:
+        
         # see https://sdk.clams.ai/autodoc/clams.app.html#clams.app.ClamsApp._annotate
 
         # initialize mmif view
@@ -39,8 +40,7 @@ class BoundingboxConcatenation(ClamsApp):
         else:
             mmif_obj = mmif
         new_view = mmif_obj.new_view()
-        config = self.get_configuration(**parameters)
-        self.sign_view(new_view, config)
+        self.sign_view(new_view, parameters)
         new_view.new_contain(
             AnnotationTypes.BoundingBox
         ) 
@@ -79,14 +79,14 @@ class BoundingboxConcatenation(ClamsApp):
                     ]
                     box_anno = anno_id_to_annotation[box_id].properties["coordinates"]
                     if (
-                        anno_id_to_annotation[box_id].properties["boxType"]
-                        == config["boxType"]
+                        anno_id_to_annotation[box_id].properties["label"]
+                        == parameters["label"]
                     ):
                         box_dict[timepoint_anno].append(box_anno)
 
         # concatenate bounding boxes and add to mmif
         out_coords = self.make_boxes(box_dict)
-        mmif_obj = self.annotate_boxes(mmif_obj, new_view, out_coords, **config)
+        mmif_obj = self.annotate_boxes(mmif_obj, new_view, out_coords, **parameters)
 
         
         return mmif_obj
@@ -99,7 +99,7 @@ class BoundingboxConcatenation(ClamsApp):
         - boundingbox_dictionary:
             a dict mapping bbox coords (val) to timepoints (key) 
 
-        ## # returns 
+        ### returns 
         a dictionary of the form 
         `{timepoint: [[top_left_x, top_left_y],...,[bot_right_x, bot_right_y]]}`
         """
@@ -147,12 +147,12 @@ class BoundingboxConcatenation(ClamsApp):
         """Perform mmif annotation with new coordinates.
         
         ### params
-        - mmif   => Mmif object we are annotating
-        - view   => View to which we are adding annotations
-        - coords => Dict of individual bounding boxes for each timepoint
+        + mmif   => Mmif object we are annotating
+        + view   => View to which we are adding annotations
+        + coords => Dict of individual bounding boxes for each timepoint
 
         ### returns
-        Mmif object with new view annotations
+        + Mmif object with new view annotations
         """
         for time_point, box_coords in coords.items():
             bb_annotation = view.new_annotation(AnnotationTypes.BoundingBox)
@@ -160,7 +160,7 @@ class BoundingboxConcatenation(ClamsApp):
             tp_annotation.add_property("timeUnit", config["timeUnit"])
             tp_annotation.add_property("timePoint", time_point)
 
-            bb_annotation.add_property("boxType", config["boxType"])
+            bb_annotation.add_property("label", config["label"])
 
             bb_annotation.add_property("coordinates", box_coords)
 
